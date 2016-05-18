@@ -1,6 +1,17 @@
 (function(angular) {
     'use strict';
 
+    var mysql = require('mysql');
+
+    var connection = mysql.createConnection({
+        host    :'localhost',
+        port : 3306,
+        user : 'mirror',
+        password : 'mirror1234',
+        database:'mirror'
+    });
+
+
     function MirrorCtrl(
             AnnyangService,
             GeolocationService,
@@ -13,13 +24,23 @@
             GiphyService,
             TrafficService,
             TimerService,
-            $rootScope, $scope, $timeout, $interval, tmhDynamicLocale, $translate) {
+            $rootScope, $scope, $timeout, $interval, tmhDynamicLocale, $translate, $sce, $q) {
         var _this = this;
         $scope.listening = false;
         $scope.debug = false;
         $scope.focus = "default";
         $scope.user = {};
         $scope.commands = [];
+
+
+        $scope.bus = function(){
+            if($scope.focus != "map"){
+                $scope.focus = "map";
+            }else{
+                $scope.focus = "default";
+            }
+
+        }
         /*$translate('home.commands').then(function (translation) {
             $scope.interimResult = translation;
         });*/
@@ -31,6 +52,18 @@
             $scope.fitbitEnabled = true;
         }
 
+
+        function getCustomers() {
+            var deferred = $q.defer();
+            var query = "SELECT * FROM belonging";
+            connection.query(query, function (err, rows) {
+                if (err) deferred.reject(err);
+                deferred.resolve(rows);
+            });
+            console.log(deferred.promise);
+            return deferred.promise;
+        }
+        $scope.belonging = getCustomers();
         //set lang
         $scope.locale = config.language;
         tmhDynamicLocale.set(config.language.toLowerCase());
@@ -54,9 +87,12 @@
             updateTime();
             GeolocationService.getLocation({enableHighAccuracy: true}).then(function(geoposition){
                 console.log("Geoposition", geoposition);
-                $scope.map = MapService.generateMap(geoposition.coords.latitude+','+geoposition.coords.longitude);
+                $scope.map = $sce.trustAsResourceUrl(MapService.generateMap(geoposition.coords.latitude+','+geoposition.coords.longitude));
             });
             restCommand();
+
+
+
 
             var refreshMirrorData = function() {
                 //Get our location and then get the weather for our location

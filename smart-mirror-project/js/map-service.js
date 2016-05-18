@@ -16,9 +16,10 @@
             if (targetZoom === undefined) {
                 targetZoom = service.zoom;
             }
-            return "https://maps.googleapis.com/maps/api/staticmap?center="+targetCenter+"&zoom="+targetZoom+
+            return "http://map.daum.net/?eX=523953&eY=1084098";
+            /*return "https://maps.googleapis.com/maps/api/staticmap?center="+targetCenter+"&zoom="+targetZoom+
             "&format=png&sensor=false&scale=2&size="+window.innerWidth+
-            "x1200&maptype=roadmap&style=visibility:on|weight:1|invert_lightness:true|saturation:-100|lightness:1";
+            "x1200&maptype=roadmap&style=visibility:on|weight:1|invert_lightness:true|saturation:-100|lightness:1";*/
         };
 
         service.zoomIn = function() {
