@@ -1,22 +1,12 @@
 (function(angular) {
     'use strict';
 
-    var mysql = require('mysql');
-
-    var connection = mysql.createConnection({
-        host    :'localhost',
-        port : 3306,
-        user : 'mirror',
-        password : 'mirror1234',
-        database:'mirror'
-    });
-
 
     function MirrorCtrl(
             AnnyangService,
             GeolocationService,
             WeatherService,
-            FitbitService,
+            SubwayService,
             MapService,
             HueService,
             CalendarService,
@@ -24,6 +14,7 @@
             GiphyService,
             TrafficService,
             TimerService,
+            BelongingService,
             $rootScope, $scope, $timeout, $interval, tmhDynamicLocale, $translate, $sce, $q) {
         var _this = this;
         $scope.listening = false;
@@ -32,38 +23,18 @@
         $scope.user = {};
         $scope.commands = [];
 
+        var promise = BelongingService.getCustomers();
+        promise.then(function(rows){
+            $scope.belonging = rows;
+        })
 
-        $scope.bus = function(){
-            if($scope.focus != "map"){
-                $scope.focus = "map";
-            }else{
-                $scope.focus = "default";
-            }
-
-        }
         /*$translate('home.commands').then(function (translation) {
             $scope.interimResult = translation;
         });*/
         $scope.interimResult = $translate.instant('home.commands');
         $scope.layoutName = 'main';
 
-        $scope.fitbitEnabled = false;
-        if (typeof config.fitbit != 'undefined') {
-            $scope.fitbitEnabled = true;
-        }
 
-
-        function getCustomers() {
-            var deferred = $q.defer();
-            var query = "SELECT * FROM belonging";
-            connection.query(query, function (err, rows) {
-                if (err) deferred.reject(err);
-                deferred.resolve(rows);
-            });
-            console.log(deferred.promise);
-            return deferred.promise;
-        }
-        $scope.belonging = getCustomers();
         //set lang
         $scope.locale = config.language;
         tmhDynamicLocale.set(config.language.toLowerCase());
@@ -129,20 +100,7 @@
                     console.log(error);
                 });
 
-                if ($scope.fitbitEnabled) {
-                    setTimeout(function() { refreshFitbitData(); }, 5000);
-                }
-            };
 
-            var refreshFitbitData = function() {
-                console.log('refreshing fitbit data');
-                FitbitService.profileSummary(function(response){
-                    $scope.fbDailyAverage = response;
-                });
-                
-                FitbitService.todaySummary(function(response){
-                    $scope.fbToday = response;
-                });
             };
 
             refreshMirrorData();
@@ -199,6 +157,7 @@
 
             $interval(refreshComic, 12*60*60000); // 12 hours
 
+
             var addCommand = function(commandId, commandFunction){
                 var voiceId = 'commands.'+commandId+'.voice';
                 var textId = 'commands.'+commandId+'.text';
@@ -211,6 +170,32 @@
                     }
                 });
             };
+
+
+            /** Subway */
+                // 지하철 도착 정보
+            var subwayFunction = function(station,linenumber,updown) {
+                SubwayService.init(station).then(function(){
+                    SubwayService.getArriveTime(linenumber,updown).then(function(data){
+                        if(data != null){
+                            $scope.subwayinfo1 = data[1].ARRIVETIME + "에 " + data[1].SUBWAYNAME + "행 열차";
+                            $scope.subwayinfo2 = data[2].ARRIVETIME + "에 " + data[2].SUBWAYNAME + "행 열차";
+                            $scope.subwayinfo3 = data[3].ARRIVETIME + "에 " + data[3].SUBWAYNAME + "행 열차";
+                            $scope.subwayinfo4 = data[4].ARRIVETIME + "에 " + data[4].SUBWAYNAME + "행 열차";
+
+                            if(responsiveVoice.voiceSupport()) {
+                                responsiveVoice.speak(data[1].ARRIVETIME + "에 " + data[1].SUBWAYNAME + "행 열차가 있습니다. 이어서,"+data[2].ARRIVETIME + "에 " + data[2].SUBWAYNAME + "행 열차가 있습니다.","Korean Female");
+                            }
+                        }else{
+                            $scope.subwayinfo = "운행하는 열차가 존재 하지 않습니다.";
+                        }
+                        $scope.focus = "subway";
+                    });
+                });
+            };
+
+
+            addCommand('subway', subwayFunction);
 
             // List commands
             addCommand('list', function() {
@@ -310,12 +295,6 @@
                 });
             });
 
-            //Show fitbit stats (registered only if fitbit is configured in the main config)
-            if ($scope.fitbitEnabled) {
-                AnnyangService.addCommand('show my walking', function() {
-                    refreshFitbitData();
-                });
-            }
 
             // Show xkcd comic
             addCommand('image_comic', function(state, action) {
@@ -397,6 +376,26 @@
                     AnnyangService.abort();
                 }
             });
+
+            $scope.subway = function(){
+                if($scope.focus != "subway"){
+                    subwayFunction(2,'2',"상행성");
+                    $scope.focus = "subway";
+                }else{
+                    $scope.focus = "default";
+                }
+            }
+
+
+            $scope.showCalendar = function(){
+                if($scope.focus != "calendar"){
+                    $scope.focus = "calendar";
+                }else{
+                    $scope.focus = "default";
+                }
+            }
+
+
         };
 
         _this.init();

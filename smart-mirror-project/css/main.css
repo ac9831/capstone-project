@@ -8,6 +8,7 @@ body {
   font-family: 'HelveticaNeue-UltraLight', 'Open Sans', sans-serif;
   font-weight: 300;
   position: relative;
+  width:100%;
 }
 
 h1, h2, h3, h4, h5 {
@@ -67,16 +68,17 @@ dt {
 }
 
 .top-center{
-  width:40%;
+  width:50%;
   float:left;
 }
 
 .top-center .info-icon{
   text-align: center;
+  padding-top : 30px;
 }
 
 .top-right {
-  width:30%;
+  width:19%;
   float: left;
   text-align: right;
 }
@@ -173,36 +175,6 @@ ul.calendar {
 .weather .weather-today canvas, .weather .weather-week-day canvas {
   display: none; }
 
-.fitbit {
-    height: 100%;
-}
-
-.fitbit-title {
-    margin-right: 10px;
-    font-size: 24px;
-}
-
-.fitbit-subtitle {
-    margin-right: 10px;
-    font-size: 20px;
-}
-
-.fitbit-item {
-    color: #ccc;
-    margin-right: 10px;
-    font-size: 16px;
-}
-
-.fitbit-badge {
-    width: 16px;
-    height: 16px;
-}
-
-.fitbit-main {
-    display: inline-block;
-    margin-right: 10px;
-    width: 450px;
-}
 
 .traffic-information {
   text-align: right;
@@ -263,6 +235,10 @@ ul.calendar {
 
 .map {
   height: 800px; }
+
+.calendar{
+  height: 800px;
+}
 
 .contents-box {
   text-align: center;
@@ -357,4 +333,9 @@ ul.calendar {
 .article{
   color : white;
   text-decoration:none;
+}
+
+.topIcon{
+  width:80px;
+  height:80px;
 }

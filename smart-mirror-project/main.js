@@ -96,8 +96,8 @@ connection.connect(function(err) {
 var events = require('events');
 global.sender = new events.EventEmitter();
 
-http.createServer(smartmirror).listen(9090,function() {
-  console.log('server on 9090...');
+http.createServer(smartmirror).listen(8080,function() {
+  console.log('server on 8080...');
 });
 
 /* GET 통신을 위한  */
@@ -113,14 +113,9 @@ smartmirror.get('/noti.do',function(req,res){
   res.send("<h1>Noti OK</h1>");
 });
 
-smartmirror.get('/inbelong',function(req,res){
-  var user = {'address':req.body.address};
-  var query = connection.query('insert into belonging set ?',user,function(err,result){
-    if (err) {
-      console.error(err);
-      throw err;
-    }
-    console.log(query);
+smartmirror.post('/inbelong',function(req,res){
+
+
     res.send(200,'success');
-  });
+
 });
