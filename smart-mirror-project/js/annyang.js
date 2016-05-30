@@ -3,6 +3,7 @@
 //! author  : Tal Ater @TalAter
 //! license : MIT
 //! https://www.TalAter.com/annyang/
+//! Modified by Evan Cohen
 
 (function (undefined) {
   "use strict";
@@ -22,10 +23,10 @@
 
   // Get the SpeechRecognition object, while handling browser prefixes
   var SpeechRecognition = root.SpeechRecognition ||
-                          root.webkitSpeechRecognition ||
-                          root.mozSpeechRecognition ||
-                          root.msSpeechRecognition ||
-                          root.oSpeechRecognition;
+      root.webkitSpeechRecognition ||
+      root.mozSpeechRecognition ||
+      root.msSpeechRecognition ||
+      root.oSpeechRecognition;
 
   // Check browser support
   // This is done as early as possible, to make it as fast as possible for unsupported browsers
@@ -51,12 +52,12 @@
   var escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#]/g;
   var commandToRegExp = function(command) {
     command = command.replace(escapeRegExp, '\\$&')
-                  .replace(optionalParam, '(?:$1)?')
-                  .replace(namedParam, function(match, optional) {
-                    return optional ? match : '([^\\s]+)';
-                  })
-                  .replace(splatParam, '(.*?)')
-                  .replace(optionalRegex, '\\s*$1?\\s*');
+        .replace(optionalParam, '(?:$1)?')
+        .replace(namedParam, function(match, optional) {
+          return optional ? match : '([^\\s]+)';
+        })
+        .replace(splatParam, '(.*?)')
+        .replace(optionalRegex, '\\s*$1?\\s*');
     return new RegExp('^' + command + '$', 'i');
   };
 
@@ -143,20 +144,20 @@
       recognition.onerror   = function(event) {
         invokeCallbacks(callbacks.error, event);
         switch (event.error) {
-        case 'network':
-          invokeCallbacks(callbacks.errorNetwork);
-          break;
-        case 'not-allowed':
-        case 'service-not-allowed':
-          // if permission to use the mic is denied, turn off auto-restart
-          autoRestart = false;
-          // determine if permission was denied by user or automatically.
-          if (new Date().getTime()-lastStartedAt < 200) {
-            invokeCallbacks(callbacks.errorPermissionBlocked);
-          } else {
-            invokeCallbacks(callbacks.errorPermissionDenied);
-          }
-          break;
+          case 'network':
+            invokeCallbacks(callbacks.errorNetwork);
+            break;
+          case 'not-allowed':
+          case 'service-not-allowed':
+            // if permission to use the mic is denied, turn off auto-restart
+            autoRestart = false;
+            // determine if permission was denied by user or automatically.
+            if (new Date().getTime()-lastStartedAt < 200) {
+              invokeCallbacks(callbacks.errorPermissionBlocked);
+            } else {
+              invokeCallbacks(callbacks.errorPermissionDenied);
+            }
+            break;
         }
       };
 
@@ -281,6 +282,21 @@
           root.console.log(e.message);
         }
       }
+    },
+
+    /**
+     * Shim to call recognition from the command line
+     *
+     *  @method simulate
+     */
+    simulate: function(command) {
+      var simulatedEvent = {};
+      simulatedEvent.resultIndex = 0;
+      simulatedEvent.results = [[{
+        transcript : command
+      }]]
+      simulatedEvent.results[0].isFinal = true,
+          recognition.onresult(simulatedEvent);
     },
 
     /**
@@ -477,170 +493,3 @@
   };
 
 }).call(this);
-
-/**
- * # Good to Know
- *
- * ## Commands Object
- *
- * Both the [init()]() and addCommands() methods receive a `commands` object.
- *
- * annyang understands commands with `named variables`, `splats`, and `optional words`.
- *
- * * Use `named variables` for one word arguments in your command.
- * * Use `splats` to capture multi-word text at the end of your command (greedy).
- * * Use `optional words` or phrases to define a part of the command as optional.
- *
- * #### Examples:
- * ````html
- * <script>
- * var commands = {
- *   // annyang will capture anything after a splat (*) and pass it to the function.
- *   // e.g. saying "Show me Batman and Robin" will call showFlickr('Batman and Robin');
- *   'show me *term': showFlickr,
- *
- *   // A named variable is a one word variable, that can fit anywhere in your command.
- *   // e.g. saying "calculate October stats" will call calculateStats('October');
- *   'calculate :month stats': calculateStats,
- *
- *   // By defining a part of the following command as optional, annyang will respond
- *   // to both: "say hello to my little friend" as well as "say hello friend"
- *   'say hello (to my little) friend': greeting
- * };
- *
- * var showFlickr = function(term) {
- *   var url = 'http://api.flickr.com/services/rest/?tags='+tag;
- *   $.getJSON(url);
- * }
- *
- * var calculateStats = function(month) {
- *   $('#stats').text('Statistics for '+month);
- * }
- *
- * var greeting = function() {
- *   $('#greeting').text('Hello!');
- * }
- * </script>
- * ````
- *
- * ### Using Regular Expressions in commands
- * For advanced commands, you can pass a regular expression object, instead of
- * a simple string command.
- *
- * This is done by passing an object containing two properties: `regexp`, and
- * `callback` instead of the function.
- *
- * #### Examples:
- * ````javascript
- * var calculateFunction = function(month) { console.log(month); }
- * var commands = {
- *   // This example will accept any word as the "month"
- *   'calculate :month stats': calculateFunction,
- *   // This example will only accept months which are at the start of a quarter
- *   'calculate :quarter stats': {'regexp': /^calculate (January|April|July|October) stats$/, 'callback': calculateFunction}
- * }
- ````
- *
- * ## Languages
- *
- * While there isn't an official list of supported languages (cultures? locales?), here is a list based on [anecdotal evidence](http://stackoverflow.com/a/14302134/338039).
- *
- * * Afrikaans `af`
- * * Basque `eu`
- * * Bulgarian `bg`
- * * Catalan `ca`
- * * Arabic (Egypt) `ar-EG`
- * * Arabic (Jordan) `ar-JO`
- * * Arabic (Kuwait) `ar-KW`
- * * Arabic (Lebanon) `ar-LB`
- * * Arabic (Qatar) `ar-QA`
- * * Arabic (UAE) `ar-AE`
- * * Arabic (Morocco) `ar-MA`
- * * Arabic (Iraq) `ar-IQ`
- * * Arabic (Algeria) `ar-DZ`
- * * Arabic (Bahrain) `ar-BH`
- * * Arabic (Lybia) `ar-LY`
- * * Arabic (Oman) `ar-OM`
- * * Arabic (Saudi Arabia) `ar-SA`
- * * Arabic (Tunisia) `ar-TN`
- * * Arabic (Yemen) `ar-YE`
- * * Czech `cs`
- * * Dutch `nl-NL`
- * * English (Australia) `en-AU`
- * * English (Canada) `en-CA`
- * * English (India) `en-IN`
- * * English (New Zealand) `en-NZ`
- * * English (South Africa) `en-ZA`
- * * English(UK) `en-GB`
- * * English(US) `en-US`
- * * Finnish `fi`
- * * French `fr-FR`
- * * Galician `gl`
- * * German `de-DE`
- * * Hebrew `he`
- * * Hungarian `hu`
- * * Icelandic `is`
- * * Italian `it-IT`
- * * Indonesian `id`
- * * Japanese `ja`
- * * Korean `ko`
- * * Latin `la`
- * * Mandarin Chinese `zh-CN`
- * * Traditional Taiwan `zh-TW`
- * * Simplified China zh-CN `?`
- * * Simplified Hong Kong `zh-HK`
- * * Yue Chinese (Traditional Hong Kong) `zh-yue`
- * * Malaysian `ms-MY`
- * * Norwegian `no-NO`
- * * Polish `pl`
- * * Pig Latin `xx-piglatin`
- * * Portuguese `pt-PT`
- * * Portuguese (Brasil) `pt-BR`
- * * Romanian `ro-RO`
- * * Russian `ru`
- * * Serbian `sr-SP`
- * * Slovak `sk`
- * * Spanish (Argentina) `es-AR`
- * * Spanish (Bolivia) `es-BO`
- * * Spanish (Chile) `es-CL`
- * * Spanish (Colombia) `es-CO`
- * * Spanish (Costa Rica) `es-CR`
- * * Spanish (Dominican Republic) `es-DO`
- * * Spanish (Ecuador) `es-EC`
- * * Spanish (El Salvador) `es-SV`
- * * Spanish (Guatemala) `es-GT`
- * * Spanish (Honduras) `es-HN`
- * * Spanish (Mexico) `es-MX`
- * * Spanish (Nicaragua) `es-NI`
- * * Spanish (Panama) `es-PA`
- * * Spanish (Paraguay) `es-PY`
- * * Spanish (Peru) `es-PE`
- * * Spanish (Puerto Rico) `es-PR`
- * * Spanish (Spain) `es-ES`
- * * Spanish (US) `es-US`
- * * Spanish (Uruguay) `es-UY`
- * * Spanish (Venezuela) `es-VE`
- * * Swedish `sv-SE`
- * * Turkish `tr`
- * * Zulu `zu`
- *
- * ## Developing
- *
- * Prerequisities: node.js
- *
- * First, install dependencies in your local annyang copy:
- *
- *     npm install
- *
- * Make sure to run the default grunt task after each change to annyang.js. This can also be done automatically by running:
- *
- *     grunt watch
- *
- * You can also run a local server for testing your work with:
- *
- *     grunt dev
- *
- * Point your browser to `https://localhost:8443/demo/` to see the demo page.
- * Since it's using self-signed certificate, you might need to click *"Proceed Anyway"*.
- *
- */

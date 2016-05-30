@@ -22,8 +22,6 @@
                 if (err) deferred.reject(err);
                 deferred.resolve(rows);
             });
-
-            console.log(deferred.promise);
             return deferred.promise;
         }
 

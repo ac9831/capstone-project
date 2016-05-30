@@ -32,11 +32,6 @@
             "voice": "일어나",
             "description": "일어나"
         },
-        "debug": {
-            "text": "디버그 정보 보여 줘",
-            "voice": "디버그 정보 보여 줘",
-            "description": "디버그 정보 보여 줘."
-        },
         "map_show": {
             "text": "지도 보여 줘",
             "voice": "지도 보여 줘",
@@ -47,45 +42,10 @@
             "voice": "*location지도 보여 줘",
             "description": "주어진 위치의 지도를 보여 줍니다."
         },
-        "map_zoom_in": {
-            "text": "지도 확대",
-            "voice": "(지도) 확대",
-            "description": "현재 지도를 확대 합니다."
-        },
-        "map_zoom_out": {
-            "text": "지도 축소",
-            "voice": "(지도) 축소",
-            "description": "현재 지도를 축소 합니다."
-        },
-        "map_zoom_point": {
-            "text": " ________값으로 지도 설정",
-            "voice": "*value값으로지도 설정",
-            "description": "원하는 값으로 지도를 설정합니다."
-        },
-        "map_zoom_reset": {
-            "text": "지도 리셋",
-            "voice": "(지도) 리셋",
-            "description": "지도를 이전 값으로 되돌립니다."
-        },
-        "images_search": {
-            "text": "________ 보여 줘",
-            "voice": "*term 보여 줘",
-            "description": "요청한 것의 사진을 보여 줍니다."
-        },
         "image_giphy": {
             "text": "________ 짤",
             "voice": "*img짤",
             "description": "gif 이미지를 보여줍니다."
-        },
-        "image_comic": {
-            "text": "카툰 보고 싶어",
-            "voice": "카툰 보고 싶어",
-            "description": "카툰을 보여줍니다."
-        },
-        "image_comic_dilbert": {
-            "text": "Comic Dilbert",
-            "voice": "Comic Dilbert",
-            "description": "Muestra el comic Dilbert."
         },
         "reminder_insert": {
             "text": " ________상기 시켜 줘 ",
@@ -102,30 +62,20 @@
             "voice": "지금 몇 시",
             "description": "지금 몇 시"
         },
-        "timer_start": {
-            "text": "______ 타이머 (설정)",
-            "voice": "*duration 타이머 (설정)",
-            "description": "*duration 타이머 (설정)"
+        "close":{
+            "text" : "창 닫아",
+            "voice" : "창 닫아",
+            "description" : "창을 닫는다"
         },
-        "timer_show": {
-            "text": "타이머 보여줄래",
-            "voice": "타이머 보여줄래",
-            "description": "타이머 보여줄래"
+        "subway":{
+            "text" : "지하철",
+            "voice" : "지하철",
+            "description" : "지하철 도착 시간을 보여줍니다."
         },
-        "timer_stop": {
-            "text": "타이머 정지",
-            "voice": "타이머 정지",
-            "description": "타이머 정지"
-        },
-        "timer_resume": {
-            "text": "타이머 재시작",
-            "voice": "타이머 재시작",
-            "description": "타이머 재시작"
-        },
-        "light_action": {
-            "text": "불 (흰/빨간/파란)색으로 (켜/꺼)줘",
-            "voice": "불 :state *action (해)줘",
-            "description": "불 :state *action (해)줘"
+        "calendar_show" : {
+            "text" : "일정",
+            "voice" : "일정",
+            "description" : "일정을 보여줍니다."
         }
     }
 }
