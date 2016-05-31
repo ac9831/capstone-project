@@ -235,6 +235,14 @@
                 }
             }
 
+            $scope.weather = function(){
+                if($scope.focus != "weather"){
+                    $scope.focus = "weather";
+                }else{
+                    $scope.focus = "default";
+                }
+            }
+
 
             $scope.showCalendar = function(){
                 if($scope.focus != "calendar"){

@@ -35,9 +35,10 @@
     <script src="js/subway-service.js"></script>
     <script src="js/controller.js"></script>
 
+
+
     <script>
       window.$ = window.jQuery =require('./js/jquery-2.2.3.min.js');
-
       $(function(){
         $('#news-div').load('https://news.google.co.kr/news?pz=1&zx=muklwsp2gkt0 .section-toptop .esc-lead-article-title ',function(){
           console.log('news loaded.');
@@ -46,11 +47,14 @@
 
     </script>
 
+
+
     <!-- Styles and Resources -->
     <link rel="shortcut icon" href="favicon.ico" />
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,800,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/{{ layoutName }}.css" />
     <link rel="stylesheet" href="css/weather-icons.css">
+
     <!-- bower:css -->
     <!-- endbower -->
 
@@ -77,29 +81,31 @@
             </div>
           </div>
           <div class="top-right">
-            <div class="weather">
-              <div class="weather-today">
-                <span class="icon dimmed wi {{currentForcast.wi}}"></span>
-                <canvas id="icon_weather_current" width="90" height="70"></canvas>
-                <span class="tempreture">{{currentForcast.temperature}}&deg;</span>
-              </div>
-              <div class="weather-week-descriptor">
-                <span>{{hourlyForcast.summary}}</span>
-                <span>{{weeklyForcast.summary}}</span>
-              </div>
-              <div class="weather-week" ng-repeat="forcast in weeklyForcast.data" ng-if="$index > 0">
-                <div class="weather-week-day">
-                  <span class="day light-grey">{{forcast.day}}</span>
-                  <canvas id="icon_weather_{{forcast.counter}}" width="33" height="25"></canvas>
-                  <span class="icon-small dimmed wi wi-fw {{forcast.wi}}"></span>
-                  <span class="tempreture tempreture-min">{{forcast.temperatureMin}}&deg;</span>
-                  <span class="tempreture tempreture-max">{{forcast.temperatureMax}}&deg;</span>
+            <div class="weather" >
+              <a src="#weather" ng-mousedown="weather()">
+                <div class="weather-today">
+                  <span class="icon dimmed wi {{currentForcast.wi}}"></span>
+                  <canvas id="icon_weather_current" width="90" height="70"></canvas>
+                  <span class="tempreture">{{currentForcast.temperature}}&deg;</span>
                 </div>
-              </div>
-              <!-- Workaround: -->
-              <div style="display: none;" ng-repeat="forcast in weeklyForcast.data" ng-if="$index > 0">
-                <span ng-init="iconLoad('icon_weather_'+forcast.counter, forcast.iconAnimation)"></span>
-              </div>
+                <div class="weather-week-descriptor">
+                  <span>{{hourlyForcast.summary}}</span>
+                  <span>{{weeklyForcast.summary}}</span>
+                </div>
+                <div class="weather-week" ng-repeat="forcast in weeklyForcast.data" ng-if="$index > 0">
+                  <div class="weather-week-day">
+                    <span class="day light-grey">{{forcast.day}}</span>
+                    <canvas id="icon_weather_{{forcast.counter}}" width="33" height="25"></canvas>
+                    <span class="icon-small dimmed wi wi-fw {{forcast.wi}}"></span>
+                    <span class="tempreture tempreture-min">{{forcast.temperatureMin}}&deg;</span>
+                    <span class="tempreture tempreture-max">{{forcast.temperatureMax}}&deg;</span>
+                  </div>
+                </div>
+                <!-- Workaround: -->
+                <div style="display: none;" ng-repeat="forcast in weeklyForcast.data" ng-if="$index > 0">
+                  <span ng-init="iconLoad('icon_weather_'+forcast.counter, forcast.iconAnimation)"></span>
+                </div>
+              </a>
             </div>
           <div id="belonging-id" class="belonging-container news animate-grow" >
             <ul class="calendar fade">
@@ -198,9 +204,6 @@
     </div>
     <!-- Sleep cover -->
     <div ng-show="focus == 'sleep'" class="sleep-cover fade"></div>
-
-
-
 
   </body>
 </html>
