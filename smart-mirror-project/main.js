@@ -118,8 +118,8 @@ var querystring = require('querystring');
 
 smartmirror.post('/insert',function(req,res){
 
-
-  var article = req.body.articles;
+  res.send(200, req.body);
+  var article = JSON.parse(req.body);
   res.send(200, article);
   var len = article.length;
   for(var i = 0 ;i<len;i++){
